@@ -4,6 +4,8 @@ import { trackUrls } from './assets/track-urls';
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchTracks } from './lib/fetchTracks';
+import { AlbumCover } from './components/AlbumCover';
+import { SavedTrack } from 'spotify-types';
 
 const App = () => {
   const [trackIndex, setTrackIndex] = useState(0);
@@ -17,13 +19,21 @@ const App = () => {
     queryFn: fetchTracks,
   });
 
-  if (tracks) console.log(tracks[0]?.track.name);
+  const getAlbumCover = () => {
+    if (tracks) {
+      const currentTrack = tracks[trackIndex];
+      return <AlbumCover track={currentTrack} />;
+    }
+    return <p>'No title loaded'</p>;
+  };
 
-  const firstTrackNameDiv = tracks ? (
-    <p>{tracks[0]?.track.name}</p>
-  ) : (
-    <p>'No title loaded'</p>
-  );
+  const getTrackNameDiv = (index: number) => {
+    if (tracks) {
+      const trackName = tracks[index]?.track.name;
+      return <p>{trackName}</p>;
+    }
+    return <p>'No title loaded'</p>;
+  };
 
   return (
     <div className="App">
@@ -35,10 +45,11 @@ const App = () => {
         <p>Il va falloir modifier le code pour faire un vrai blind test !</p>
       </div>
       <div className="App-buttons"></div>
-      <audio src={trackUrls[trackIndex]} autoPlay controls />
       <button onClick={goToNextTrack}>Next track</button>
-      <p>{tracks?.length}</p>
-      {firstTrackNameDiv}
+      {getAlbumCover()}
+      {getTrackNameDiv(1)}
+      {getTrackNameDiv(2)}
+      {getTrackNameDiv(3)}
     </div>
   );
 };
